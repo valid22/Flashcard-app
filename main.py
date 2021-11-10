@@ -2,6 +2,7 @@
 
 from flashcard.core.config import APP_NAME
 from flashcard.core import events as _e
+from flashcard.routes import routes_blueprint
 from flashcard import event
 
 from flask import Flask
@@ -10,6 +11,7 @@ def create_app() -> Flask:
     app = Flask(APP_NAME)
     
     event.emit("before_start", app)
+    app.register_blueprint(routes_blueprint)
 
     return app
 

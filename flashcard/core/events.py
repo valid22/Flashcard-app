@@ -2,6 +2,7 @@ from flashcard import event
 from flashcard.core.config import *
 from flashcard.core import db
 from flashcard.core.log import InterceptHandler
+from flashcard.models import schema
 
 from flask import Flask
 from flask.logging import default_handler
