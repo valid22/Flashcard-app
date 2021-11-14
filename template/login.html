@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Flashcard | Login/Signup{% endblock title %}
+
+{% block body_class %}text-center bg-secondary{% endblock body_class %}
+
+{% block content%}
+
+<div class="container">
+    <main class="form-signin">
+      <div class="modal modal-signin position-static d-block py-5" tabindex="-1" role="dialog" id="modal-login">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content rounded-5 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+              <p><img class="mb-4" src="{{url_for('static', filename='images/flashcard.png')}}" alt="" width="72" height="57"></p>
+              <h2 class="fw-bold mb-0">Login to Flashcard portal</h2>
+            </div>
+      
+            <div class="modal-body p-5 pt-0">
+              {% if errors is defined and errors | length > 0%}
+                <div class="alert alert-danger" role="alert">
+                  <h4 class="alert-heading">Error</h4>
+                  {% for error in errors %}
+                    {% for field in error['loc'] %}
+                      <p class="text-start"><strong>{{field}}</strong> {{error['msg']}}</p>
+                    {% endfor %}
+                  {% endfor %}
+                  {{error}}
+                </div>
+              {% endif %}
+
+              <form class="needs-validation" novalidate method="POST">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control rounded-4" id="floatingInput" name="username" placeholder="Enter username" required>
+                  <label for="floatingInput" class="form-label">Username</label>
+                  <div class="invalid-feedback text-start">
+                    Please provide a valid username.
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control rounded-4" id="floatingPassword" name="password" placeholder="Enter password" required>
+                  <label for="floatingPassword" class="form-label">Password</label>
+                  <div class="invalid-feedback text-start">
+                    Please provide a password.
+                  </div>
+                </div>
+                <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Sign in / Create account</button>
+                <small class="text-muted">By clicking above button, an account will be created if doesn't exist for the username.</small>
+    
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+    </main>
+</div>
+
+<style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 550px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.rounded-4 { border-radius: .5rem; }
+.rounded-5 { border-radius: .75rem; }
+.rounded-6 { border-radius: 1rem; }
+
+.modal-sheet .modal-dialog {
+    width: 380px;
+    transition: bottom .75s ease-in-out;
+}
+.modal-sheet .modal-footer {
+    padding-bottom: 2rem;
+}
+
+.modal-alert .modal-dialog {
+    width: 380px;
+}
+
+.border-right { border-right: 1px solid #eee; }
+
+.modal-tour .modal-dialog {
+    width: 380px;
+}
+
+</style>
+
+<script>
+  (function () {
+    'use strict'
+  
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
+  
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+  
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+</script>
+{% endblock content %}

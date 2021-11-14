@@ -9,7 +9,6 @@ class User(db.Model):
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False) # sha256 hash
 
-    name = db.Column(db.String(120), nullable=False)
     registered_on = db.Column(db.DateTime, server_default=func.now())
 
 class UserDeck(db.Model):

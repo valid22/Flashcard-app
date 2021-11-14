@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>{% block title %}{% endblock title %}</title>
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="icon" href="{{url_for('static', filename='images/flashcard.png')}}">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body class="{% block body_class %} {% endblock body_class %}">
+
+	{% block content %} {% endblock content %}
+	
+	<script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+</body>
+
+</html>

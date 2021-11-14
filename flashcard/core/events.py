@@ -1,11 +1,13 @@
 from flashcard import event
 from flashcard.core.config import *
-from flashcard.core import db
+from flashcard.core import db, sess
 from flashcard.core.log import InterceptHandler
 from flashcard.models import schema
 
 from flask import Flask
 from flask.logging import default_handler
+from flask_session import Session
+from datetime import timedelta
 from loguru import logger
 import logging
 import sys
@@ -13,16 +15,30 @@ import sys
 
 @event.on("before_start")
 def pre_process(app: Flask) -> None:
+    """Initialize app config values
+
+    Args:
+        app (Flask): Flask app
+    """
+
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_ECHO'] = SQLALCHEMY_ECHO
     app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.config['TOKEN_HEADER'] = "Authorization"
     app.config['ENV'] = 'development'
+    app.config['SECRET_KEY'] = SECRET_KEY
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     logger.info("initialized app config values")
 
 @event.on("before_start")
 def intercept_log(app: Flask) -> None:
+    """Add intercept handler to Flask
+
+    Args:
+        app (Flask): Flask app
+    """
+
     logger.remove()
     logger.add(LOG_FILE, level=LOG_LEVEL, format="{time} | {level} | {name}.{function}:{line} | {message}",
                  backtrace=LOG_BACKTRACE, rotation='5 MB', enqueue=True)
@@ -32,10 +48,17 @@ def intercept_log(app: Flask) -> None:
     #register loguru as handler
     app.logger.setLevel(LOG_LEVEL)
     logging.basicConfig(handlers=[InterceptHandler()], level=LOG_LEVEL)
+
     logger.info("added log intercept handler")
 
 @event.on("before_start")
 def setup_database(app: Flask) -> None:
+    """Setup the database
+
+    Args:
+        app (Flask): Flask app
+    """
+
     db.init_app(app)
 
     with app.app_context():
@@ -43,4 +66,14 @@ def setup_database(app: Flask) -> None:
 
     logger.info("database setup complete")
 
+@event.on("before_start")
+def setup_session(app: Flask) -> None:
+    """Initialize Flask-sessions.
 
+    Args:
+        app (Flask): Flask app
+    """
+    
+    sess.init_app(app)
+
+    logger.info("flask-session initialized")

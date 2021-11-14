@@ -8,7 +8,7 @@ from flashcard import event
 from flask import Flask
 
 def create_app() -> Flask:
-    app = Flask(APP_NAME)
+    app = Flask(APP_NAME, template_folder="template", static_folder="static")
     
     event.emit("before_start", app)
     app.register_blueprint(routes_blueprint)
@@ -18,4 +18,4 @@ def create_app() -> Flask:
 app: Flask = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True, load_dotenv=False, port=8080)
+    app.run(load_dotenv=False, port=8080)

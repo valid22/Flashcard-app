@@ -1,0 +1,15 @@
+<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+    <a href="{{url_for('routes.dashboard.dashboard')}}" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+      <img class="bi me-2" width="40" height="32" src="{{url_for('static', filename='images/flashcard.png')}}"> <h3> Flashcard </h3>
+    </a>
+
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+      <li><a href="{{'#' if page == 'home' else url_for('routes.dashboard.dashboard')}}" class="nav-link px-2 {{'link-primary' if page == 'home' else 'link-dark'}}">Home</a></li>
+      <li><a href="{{'#' if page != 'deck' else url_for('routes.dashboard.deck')}}" class="nav-link px-2 {{'link-primary' if page == 'deck' else 'link-dark'}}">Deck</a></li>
+      <li><a href="{{'#' if page != 'review' else url_for('routes.dashboard.review')}}" class="nav-link px-2 {{'link-primary' if page == 'review' else 'link-dark'}}">Review</a></li>
+    </ul>
+
+    <div class="col-md-3 text-end" style="padding-right: 10px;">
+        <a href="{{url_for('routes.login.login')}}"><button class="btn btn-outline-primary">Logout</button></a>
+    </div>
+</header>
