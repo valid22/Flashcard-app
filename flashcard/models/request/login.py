@@ -13,6 +13,7 @@ class LoginRequest(BaseModel):
         assert username.isalnum(), "must be alpha-numberic"
 
         return username
+        
     @validator("password")
     def password_validator(cls, password):
         assert 6 <= len(password), "must be at least 6 characters long"

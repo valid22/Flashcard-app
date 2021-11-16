@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Flashcard | Dashboard {% endblock title %}
+{% block title %} Dashboard {% endblock title %}
 
 {% block body_class %}  home {% endblock body_class %}
 
@@ -14,4 +14,7 @@
 
 </div>
 
+{% block end_body_block %}
+    <script src="{{url_for('static', filename='js/jquery-3.6.0.min.js')}}"></script>
+{% endblock end_body_block %}
 {% endblock content %}

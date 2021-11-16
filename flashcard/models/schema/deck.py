@@ -2,20 +2,18 @@ from flashcard.core import db
 from sqlalchemy.sql import func
 from sqlalchemy.orm import backref
 
+
+deck_tag_association = db.Table('deck_tag', db.Model.metadata,
+    db.Column('deck_id', db.Integer, db.ForeignKey('deck.deck_id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.tag_id'))
+)
 class Deck(db.Model):
     __tablename__ = "deck"
     deck_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
 
     deck_title = db.Column(db.String(120), nullable=False)
     created_on = db.Column(db.DateTime, server_default=func.now())
 
     cards = db.relationship("Card", cascade="all,delete", backref="deck")
-
-class DeckTag(db.Model):
-    __tablename__ = "deck_tag"
-
-    deck_id = db.Column(db.Integer, db.ForeignKey("deck.deck_id"), primary_key=True)
-    tag_id = db.Column(db.Integer, db.ForeignKey("tag.tag_id"), primary_key=True)
-
-    card = db.relationship("Deck", backref=backref("tags", cascade="all,delete"))
-    tag = db.relationship("Tag", backref=backref("deck_tags", cascade="all,delete"))
+    tags = db.relationship("Tag", secondary=deck_tag_association, backref="decks")

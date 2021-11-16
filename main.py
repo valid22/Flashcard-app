@@ -18,4 +18,4 @@ def create_app() -> Flask:
 app: Flask = create_app()
 
 if __name__ == "__main__":
-    app.run(load_dotenv=False, port=8080)
+    app.run(debug=True, load_dotenv=False, port=8080)

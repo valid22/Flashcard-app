@@ -1,6 +1,6 @@
-from .user import User
-from .tag import Tag
-from .deck import Deck, DeckTag
-from .card import Card, CardTag
+from .user import *
+from .tag import *
+from .deck import *
+from .card import *
 
-__all__ = ["User", "Tag", "Deck", "DeckTag", "Card", "CardTag"]
+__all__ = ["User", "Tag", "Deck", "Card", "CardTag"]

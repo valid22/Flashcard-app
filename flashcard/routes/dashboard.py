@@ -21,3 +21,8 @@ def requires_login():
 @dashboard_blueprint.route("/")
 def dashboard():
     return render_template("dashboard/home.html", user=g.user)
+
+
+@dashboard_blueprint.route("/deck")
+def deck():
+    return render_template("dashboard/deck.html", user=g.user)

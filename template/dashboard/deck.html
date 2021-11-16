@@ -1,0 +1,175 @@
+{% extends 'dashboard/base.html'%}
+
+{% block title %} Decks - Dashboard {% endblock title %}
+{% set page = 'deck' %}
+
+{% block main_content %} 
+<div class="d-grid gap-3">
+    <div class="dash-heading">
+        <h1>{{user.username}}'s decks</h1>
+    </div>
+
+    <div class="container d-grid gap-3">
+        <div> <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#add-deck-model"> <span><i class="fa fa-plus"></i></span> Add new deck</button> </div>
+        
+        <div class="row g-4 deck-list-placeholder">
+          <div class="col-6">
+            <div class="card border-info bg-dark text-light">
+                <div class="card-header placeholder-glow">
+                    <span class="placeholder col-4"></span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </h5>
+                    <p class="card-text placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-6"></span>
+                    </p>
+                    <div class="">
+                        <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-3 me-2"></a>
+                        <a href="#" tabindex="-1" class="btn btn-light disabled placeholder col-3 me-2"></a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted placeholder-glow">
+                    <span class="placeholder col-4"></span>
+                </div>
+              </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-info bg-dark text-light">
+                <div class="card-header placeholder-glow">
+                    <span class="placeholder col-4"></span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title placeholder-glow">
+                        <span class="placeholder col-6"></span>
+                    </h5>
+                    <p class="card-text placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-4"></span>
+                        <span class="placeholder col-6"></span>
+                    </p>
+                    <div class="">
+                        <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-3 me-2"></a>
+                        <a href="#" tabindex="-1" class="btn btn-light disabled placeholder col-3 me-2"></a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted placeholder-glow">
+                    <span class="placeholder col-4"></span>
+                </div>
+              </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="add-deck-model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-deck-model-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="add-deck-model-label">Create a new deck</h5>
+                    <button type="button" class="btn-close close-model-btn" data-bs-dismiss="modal" aria-label="Close" onclick="clear_form()"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="needs-validation" novalidate action="#" id="new-deck-form">
+
+                        <div class="mb-3">
+                            <label for="deck-name" class="form-label">Name your deck</label>
+                            <div class="input-group mb-3 has-validation">
+                                <span class="input-group-text" id="deck-name-label"><i class="fa fa-edit"></i></span>
+                                <input type="text" class="form-control rounded-4" id="deck-name" aria-describedby="deck-name-label" required>
+                                <div class="invalid-feedback text-start">
+                                    Please provide a name for the deck.
+                                </div>
+                            </div>                            
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="deck-name" class="form-label">Tags</label>
+                            <div class="input-group mb-3 has-validation">
+                                <span class="input-group-text" id="deck-name-label"> <i class="fa fa-tags"></i></span>
+                                <input type="text" class="form-control rounded-4" id="deck-tags" data-role="tagsinput" data-tags-input-name="tag">
+                                <div class="invalid-feedback text-start">
+                                    Tags entered are invalid.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p><small class="text-muted">Add multiple tags to your deck, separated by comma <span class="badge bg-secondary">,</span></small></p>
+                        <p><small class="text-muted">A deck with the above name will be created and added to your account. You can later add cards to the deck, by visiting this deck under <span class="badge bg-secondary">Deck</span> page</small></p>
+            
+                      </form>
+                </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-model-btn" data-bs-dismiss="modal" onclick="clear_form()">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="deck-submit"> <span class="spinner-border spinner-border-sm spinner" style="display: none;" role="status" aria-hidden="true"></span> Create</button>
+                </div>
+            </div>
+            </div>
+        </div>
+</div>
+
+<style>
+.rounded-4 { border-radius: .5rem; }
+.rounded-5 { border-radius: .75rem; }
+.rounded-6 { border-radius: 1rem; }
+</style>
+
+
+{% endblock main_content %}
+
+
+{% block end_body_block %}
+{{super()}}
+
+<script src="{{url_for('static', filename='js/axios.min.js')}}"></script>
+
+<script>
+
+var submit = $("#deck-submit");
+var deck_name = $("#deck-name");
+var tags = $("#deck-tags");
+
+submit.on('click', function(event) {
+    if (!$("#new-deck-form")[0].checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        $("#new-deck-form")[0].classList.add('was-validated');
+        return
+    }
+    
+    $("#new-deck-form")[0].classList.add('was-validated');
+
+    tags.prop("readonly", true);
+    deck_name.prop("readonly", true);
+    $(".close-model-btn").attr("disabled", true)
+
+    console.info("PUT request to create new deck. URL = ");
+    data = {
+        'name': deck_name.val(),
+        'tags': tags.val()
+    }
+    
+    $("#deck-submit").attr("disabled", "true");
+    $("#deck-submit>.spinner").show();
+});
+
+function clear_form() {
+    tags.prop("readonly", false);
+    deck_name.prop("readonly", false);
+    $(".close-model-btn").attr("disabled", false)
+    $("#new-deck-form")[0].classList.remove('was-validated');
+
+    $("#deck-submit").attr("disabled", false);
+    $("#deck-submit>.spinner").hide();
+
+    tags.val("");
+    deck_name.val("");
+}
+</script>
+
+{% endblock end_body_block %}
