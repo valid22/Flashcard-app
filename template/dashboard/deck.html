@@ -10,7 +10,7 @@
     </div>
 
     <div class="container d-grid gap-3">
-        <div> <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#add-deck-model"> <span><i class="fa fa-plus"></i></span> Add new deck</button> </div>
+        <div> <button type="button" id="create-deck-model-btn" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#add-deck-model"> <span><i class="fa fa-plus"></i></span> Add new deck</button> </div>
         
         <div class="row g-4 deck-list-placeholder">
           <div class="col-6">
@@ -63,6 +63,9 @@
           </div>
           
         </div>
+        <div class="row g-4 deck-list" style="display: none;">
+                        
+          </div>
       </div>
       
       <!-- Modal -->
@@ -74,6 +77,10 @@
                     <button type="button" class="btn-close close-model-btn" data-bs-dismiss="modal" aria-label="Close" onclick="clear_form()"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-danger error" role="alert" style="display: none;">
+                        <h4 class="alert-heading">Error</h4>
+                        <div class="error-content"></div>
+                      </div>
                     <form class="needs-validation" novalidate action="#" id="new-deck-form">
 
                         <div class="mb-3">
@@ -110,6 +117,24 @@
             </div>
             </div>
         </div>
+
+        <div class="modal fade" id="deck-remove" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deck-remove-Label" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title" id="deck-remove-Label" id="deck-remove-title">Delete deck confirmation</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="deck-remove-content">
+                  Are you sure you want to delete the deck <strong>ID</strong>, <strong>NAME</strong>?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-primary" ondelete="" id="deck-remove-btn">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
 </div>
 
 <style>
@@ -125,13 +150,13 @@
 {% block end_body_block %}
 {{super()}}
 
-<script src="{{url_for('static', filename='js/axios.min.js')}}"></script>
-
 <script>
 
 var submit = $("#deck-submit");
 var deck_name = $("#deck-name");
 var tags = $("#deck-tags");
+var remove_prompt;
+
 
 submit.on('click', function(event) {
     if (!$("#new-deck-form")[0].checkValidity()) {
@@ -156,20 +181,190 @@ submit.on('click', function(event) {
     
     $("#deck-submit").attr("disabled", "true");
     $("#deck-submit>.spinner").show();
+
+    axios.put('{{url_for("routes.api.deck.create_new_deck")}}', 
+        {name: deck_name.val(), tags: tags.val()}
+    ).then(function(r) {
+        deck = r.data.data;
+
+        $('.close-model-btn').trigger('click');
+        add_deck_data(deck);
+
+        $.toast({
+            type: 'success',
+            title: `Deck ${deck.deck_id} created`,
+            subtitle: 'just now',
+            content: `Deck ${deck.deck_title} has been created successfully!`,
+            delay: 60000,
+          });
+
+    }).catch(function(e) {
+        var html = "";
+        if (e.response.status == 400) {
+            for (var err in e.response.data.validation_error.body_params) {
+                for (var i = 0; i < e.response.data.validation_error.body_params[err]['loc'].length; i++)
+                    html += `<p class="text-start"><strong>${e.response.data.validation_error.body_params[err]['loc'][i]}</strong> ${e.response.data.validation_error.body_params[err]['msg']}</p>`
+            }
+        } else {
+            if (e.response.data.errors) {
+                for (var i = 0; i < e.response.data.errors.length; i++) {
+                    html += `<p class="text-start"><strong>${e.response.data.errors[i].error_code}</strong> ${e.response.data.errors[i].error_description}</p>`;
+                }
+            } else {
+                html = '<p class="text-start">Something went wrong, please try again</p>';
+            }
+        }
+
+        $('.error-content').html(html);
+        $('.error').show();
+    }).then(release_form());
 });
 
-function clear_form() {
+
+function release_form() {
     tags.prop("readonly", false);
     deck_name.prop("readonly", false);
     $(".close-model-btn").attr("disabled", false)
     $("#new-deck-form")[0].classList.remove('was-validated');
 
     $("#deck-submit").attr("disabled", false);
-    $("#deck-submit>.spinner").hide();
+    $("#deck-submit>.spinner, .error").hide();
+}
+
+function clear_form() {
+    release_form();
 
     tags.val("");
     deck_name.val("");
+    $('.error-content').html('');
 }
+
+
+function add_deck_data(d) {
+    var tag_html = '';
+    for (var i = 0; i < d.deck_tags.length; i++) {
+        tag_html += `<span class="badge bg-light text-dark">${d.deck_tags[i]}</span> `;
+    }
+    
+    var template = `<div class="col-6" id="deck-${d.deck_id}">
+        <div class="card shadow rounded bg-dark text-light" style="border-radius: 0.9rem !important;">
+            <div class="card-header pe-none">
+                <span class="col-4">Deck ${d.deck_id}</span>
+                ${tag_html}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    <span class=" col-6">${d.deck_title}</span>
+                </h5>
+                <p class="card-text">
+                    <p><strong>${d.cards_count || "No"}</strong> cards in the deck.</p>
+                </p>
+                <div class="">
+                    <a href="/deck/${d.deck_id}/" tabindex="-1" class="btn btn-primary col-3 me-2" id="deck-view">View</a>
+                    <a onclick="remove_deck(${d.deck_id})" tabindex="-1" class="btn btn-light col-4 me-2" id="deck-rem"> <span class="spinner-border spinner-border-sm spinner" style="display: none;" role="status" aria-hidden="true"></span> Remove</a>
+                </div>
+            </div>
+            <div class="card-footer text-muted pe-none">
+                <small class="float-end"><span class=" col-4">Last reviewed: <strong>${d.last_reviewed_on}</strong></span></small>
+                <small class="float-start"><span class=" col-4">Created: <strong>${d.created_on}</strong></span></small>
+            </div>
+          </div>
+      </div>`;
+
+      $('.deck-list').append($(template));
+}
+
+function populate_decks() {
+    $('#create-deck-model-btn').prop('disabled', true);
+    $('.deck-list-placeholder').show();
+    $('.deck-list').hide();
+    $('.deck-list').html('');
+
+    axios('{{url_for("routes.api.deck.get_user_decks")}}').then(
+        function(r) {
+            if (r.data.errors) {
+                $('.deck-list').html('<div class="alert alert-danger error" role="alert" style="display: none;"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
+                return 
+            }
+
+            for (var i = 0; i < r.data.data.length; i++) {
+                add_deck_data(r.data.data[i]);
+            }
+        }
+    ).catch(
+        function(e) {
+            $('.deck-list').html('<div class="alert alert-danger error" role="alert" style="display: none;"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
+        }
+    ).then(function() {
+        $('#create-deck-model-btn').prop('disabled', false);
+        $('.deck-list-placeholder').hide();
+        $('.deck-list').show();
+    });
+}
+
+function remove_deck(deck_id, confirm) {
+    if (!confirm) {
+        var title = $(`#deck-${deck_id}`).find(".card-title").find("span").text();
+        
+        $('#deck-remove-content').html(`Are you sure you want to delete <strong>Deck ${deck_id}</strong> - <strong>${title}</strong>?`);
+        $("#deck-remove-btn").attr('onclick', `remove_deck(${deck_id}, true)`);
+
+        remove_prompt.toggle();
+
+        return
+    }
+
+    remove_prompt.toggle();
+
+    btn = $(`#deck-${deck_id}`).find("#deck-rem");
+    btn.find(".spinner").show();
+    btn.prop("disabled", "true");
+    btn.addClass("disabled");
+    $(`#deck-${deck_id}`).find("#deck-view").addClass("disabled");
+
+    var reset_deck = function() {
+        $.toast({
+            type: 'error',
+            title: `Deck ${deck_id} delete`,
+            subtitle: 'just now',
+            content: `Unable to delete Deck ${deck_id}, please try again`,
+            delay: 60000,
+          });
+
+        btn.find(".spinner").hide();
+        btn.prop("disabled", "false");
+        btn.removeClass("disabled");
+        $(`#deck-${deck_id}`).find("#deck-view").removeClass("disabled");
+    }
+
+    axios.delete('{{url_for("routes.api.deck.delete_deck", deck_id="1001")}}'.replace('1001', deck_id)).then(
+        function(r) {
+            if (r.data.errors) {
+                return reset_deck();
+            }
+
+            $.toast({
+                type: 'success',
+                title: `Deck ${deck_id} deleted`,
+                subtitle: 'just now',
+                content: `Deck ${deck_id} deleted successfully!`,
+                delay: 60000,
+              });
+
+            $(`#deck-${deck_id}`).remove();
+        }
+    ).catch(
+        reset_deck
+    );
+}
+
+$(document).ready(function() {
+    remove_prompt = new bootstrap.Modal($("#deck-remove")[0]);
+    populate_decks();
+})
+
+
 </script>
 
+<!--TODO: ADD FILTERING DECK BY TAGS-->
 {% endblock end_body_block %}

@@ -18,7 +18,7 @@ class Card(db.Model):
     card_back = db.Column(db.String, nullable=False)
 
     created_on = db.Column(db.DateTime, server_default=func.now())
+    last_reviewed = db.Column(db.DateTime, server_default=func.now())
     
     tags = db.relationship("Tag", secondary=card_tag_association, backref="cards")
-
-
+    reviews = db.relationship("Review", cascade="all,delete", backref="card")
