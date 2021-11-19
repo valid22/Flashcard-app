@@ -13,7 +13,7 @@
         <div> <button type="button" id="create-deck-model-btn" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#add-deck-model"> <span><i class="fa fa-plus"></i></span> Add new deck</button> </div>
         
         <div class="row g-4 deck-list-placeholder">
-          <div class="col-6">
+          <div class="col-sm-12 col-md-6">
             <div class="card border-info bg-dark text-light">
                 <div class="card-header placeholder-glow">
                     <span class="placeholder col-4"></span>
@@ -37,7 +37,7 @@
                 </div>
               </div>
           </div>
-          <div class="col-6">
+          <div class="col-sm-12 col-md-6">
             <div class="card border-info bg-dark text-light">
                 <div class="card-header placeholder-glow">
                     <span class="placeholder col-4"></span>
@@ -65,7 +65,7 @@
         </div>
         <div class="row g-4 deck-list" style="display: none;">
                         
-          </div>
+        </div>
       </div>
       
       <!-- Modal -->
@@ -245,8 +245,10 @@ function add_deck_data(d) {
     for (var i = 0; i < d.deck_tags.length; i++) {
         tag_html += `<span class="badge bg-light text-dark">${d.deck_tags[i]}</span> `;
     }
+
+    var cards_url = "{{url_for('routes.dashboard.deck_cards', deck_id=1001)}}".replace(1001, d.deck_id);
     
-    var template = `<div class="col-6" id="deck-${d.deck_id}">
+    var template = `<div class="col-sm-12 col-md-6" id="deck-${d.deck_id}">
         <div class="card shadow rounded bg-dark text-light" style="border-radius: 0.9rem !important;">
             <div class="card-header pe-none">
                 <span class="col-4">Deck ${d.deck_id}</span>
@@ -260,7 +262,7 @@ function add_deck_data(d) {
                     <p><strong>${d.cards_count || "No"}</strong> cards in the deck.</p>
                 </p>
                 <div class="">
-                    <a href="/deck/${d.deck_id}/" tabindex="-1" class="btn btn-primary col-3 me-2" id="deck-view">View</a>
+                    <a href="${cards_url}" tabindex="-1" class="btn btn-primary col-3 me-2" id="deck-view">View</a>
                     <a onclick="remove_deck(${d.deck_id})" tabindex="-1" class="btn btn-light col-4 me-2" id="deck-rem"> <span class="spinner-border spinner-border-sm spinner" style="display: none;" role="status" aria-hidden="true"></span> Remove</a>
                 </div>
             </div>
@@ -289,6 +291,10 @@ function populate_decks() {
 
             for (var i = 0; i < r.data.data.length; i++) {
                 add_deck_data(r.data.data[i]);
+            }
+
+            if (r.data.data.length < 1) {
+                $('.deck-list').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more decks by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`);
             }
         }
     ).catch(

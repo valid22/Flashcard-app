@@ -11,14 +11,14 @@ import json
 login_blueprint = Blueprint("login", __name__, url_prefix="/login")
 
 
-@login_blueprint.route("/")
+@login_blueprint.get("/")
 def login():
     session['user_id'] = None 
     
     return render_template("login.html")
 
 
-@login_blueprint.route("/", methods=["POST"])
+@login_blueprint.post("/")
 def login_user():
     session['user_id'] = None # fresh login
     
@@ -47,3 +47,4 @@ def handle_db_exceptions(error):
     db.session.rollback()
     
     return render_template("login.html", errors=[{"loc": ("login", ), "msg": "something went wrong during signin, please try again"}])
+
