@@ -2,12 +2,6 @@ from flashcard.core import db
 from sqlalchemy.sql import func
 from sqlalchemy.orm import backref
 
-
-card_tag_association = db.Table('card_tag', db.Model.metadata,
-    db.Column('card_id', db.Integer, db.ForeignKey('card.card_id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.tag_id'))
-)
-
 class Card(db.Model):
     __tablename__ = "card"
 
@@ -17,8 +11,13 @@ class Card(db.Model):
     card_front = db.Column(db.String, nullable=False)
     card_back = db.Column(db.String, nullable=False)
 
-    created_on = db.Column(db.DateTime, server_default=func.now())
-    last_reviewed = db.Column(db.DateTime, server_default=func.now())
+    created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    last_reviewed = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    #next_review = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     
-    tags = db.relationship("Tag", secondary=card_tag_association, backref="cards")
+    # status = db.Column(db.Integer, nullable=False, default=0)
+    # steps_index = db.Column(db.Integer, nullable=False, default=0)
+    # ease_factor = db.Column(db.Integer, nullable=False, default=250)
+    # interval = db.Column(db.Integer)
+    
     reviews = db.relationship("Review", cascade="all,delete", backref="card")

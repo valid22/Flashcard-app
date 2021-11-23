@@ -1,14 +1,48 @@
 from flask import Blueprint, session, request, g
 from flashcard.models.error import APIException, APIErrorModel
 from flashcard.models.response import APIResponse
-from flashcard.models.request.deck import CreateDeckRequest
-from flashcard.models.response.deck import DeckResponseModel
 from flashcard.models.schema import Deck, Tag, Review, Card
-from pydantic import ValidationError
+from flashcard.core import sanitizer
+from pydantic import BaseModel, validator
+from typing import List, Set, Union
 from flask_pydantic import validate
 from flashcard.core import db
 from sqlalchemy import desc
 import datetime
+
+class CreateDeckRequest(BaseModel):
+    name: str 
+    tags: Union[str, Set[str]]
+
+    @validator("tags")
+    def validate_tags(cls, val):
+        if isinstance(val, str):
+            val = val.split(",")
+        
+        assert isinstance(val, list), "tags should be a list separated by comma"
+        val = set(i.strip().lower() for i in val)
+
+        assert len(val) < 5, "can assign a maximum of 4 tags to a deck"
+
+        for tag in val:
+            assert 1 <= len(tag) <= 12, "tag can be a maximum of 12 chars long"
+        
+        return val
+    
+    @validator("name")
+    def validate_name(cls, val):
+        assert isinstance(val, str), "name should be a valid string"
+        assert 1 <= len(val) <= 120, "name can be a maximum of 120 chars long"
+
+        return val
+
+class DeckResponseModel(BaseModel):
+    deck_id: int
+    deck_title: str 
+    deck_tags: List[str]
+    created_on: str
+    last_reviewed_on: str
+    cards_count: int
 
 
 deck_blueprint = Blueprint("deck", __name__, url_prefix="/deck")
@@ -56,7 +90,7 @@ def create_new_deck(body: CreateDeckRequest) -> APIResponse:
 
 @deck_blueprint.get("/")
 @validate()
-def get_user_decks():
+def get_user_decks() -> APIResponse:
     q = db.session.query(Deck, db.func.count(Deck.cards)).select_from(Deck).outerjoin(Card).where(Deck.user == g.user).group_by(Deck.deck_id)
     
     return APIResponse(success=True, data=[
@@ -69,7 +103,7 @@ def get_user_decks():
 
 @deck_blueprint.delete("/<int:deck_id>/")
 @validate()
-def delete_deck(deck_id: int):
+def delete_deck(deck_id: int) -> APIResponse:
     deck = db.session.query(Deck).where(Deck.user == g.user, Deck.deck_id == deck_id).first()
     if deck is None:
         raise APIException(APIErrorModel(error_code="DECK404", error_description="Deck not found"), status_code=404)

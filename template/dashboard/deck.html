@@ -157,6 +157,7 @@ var deck_name = $("#deck-name");
 var tags = $("#deck-tags");
 var remove_prompt;
 
+var DECK_DATA = [];
 
 submit.on('click', function(event) {
     if (!$("#new-deck-form")[0].checkValidity()) {
@@ -188,6 +189,9 @@ submit.on('click', function(event) {
         deck = r.data.data;
 
         $('.close-model-btn').trigger('click');
+        if (DECK_DATA.length < 1)
+        $('.deck-list').html('');
+        
         add_deck_data(deck);
 
         $.toast({
@@ -237,6 +241,7 @@ function clear_form() {
     tags.val("");
     deck_name.val("");
     $('.error-content').html('');
+    $('.error').hide();
 }
 
 
@@ -274,6 +279,7 @@ function add_deck_data(d) {
       </div>`;
 
       $('.deck-list').append($(template));
+      DECK_DATA.push(d);
 }
 
 function populate_decks() {
@@ -285,7 +291,7 @@ function populate_decks() {
     axios('{{url_for("routes.api.deck.get_user_decks")}}').then(
         function(r) {
             if (r.data.errors) {
-                $('.deck-list').html('<div class="alert alert-danger error" role="alert" style="display: none;"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
+                $('.deck-list').html('<div class="alert alert-danger error" role="alert"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
                 return 
             }
 
@@ -293,13 +299,15 @@ function populate_decks() {
                 add_deck_data(r.data.data[i]);
             }
 
+            DECK_DATA = r.data.data;
+
             if (r.data.data.length < 1) {
                 $('.deck-list').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more decks by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`);
             }
         }
     ).catch(
         function(e) {
-            $('.deck-list').html('<div class="alert alert-danger error" role="alert" style="display: none;"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
+            $('.deck-list').html('<div class="alert alert-danger error" role="alert"> <p>Unable to fetch the deck data, please refresh and try again.</p> </div>');
         }
     ).then(function() {
         $('#create-deck-model-btn').prop('disabled', false);

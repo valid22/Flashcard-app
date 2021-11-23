@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html'%}
 
-{% block title %} Cards - Dashboard {% endblock title %}
+{% block title %} {{deck.deck_title}} cards {% endblock title %}
 {% set page = 'deck-cards' %}
 
 {% block main_content %} 
@@ -10,7 +10,7 @@
     </div>
 
     <div class="container d-grid gap-3">
-        <div> <button type="button" id="create-deck-model-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-card-model"> <span><i class="fa fa-plus"></i></span> Add new card</button> </div>
+        <div> <button type="button" id="create-card-model-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-card-model" disabled> <span><i class="fa fa-plus"></i></span> Add new card</button> </div>
         
         <div class="row g-4 card-list-placeholder">
           <table id="card-list-placeholder placeholder-glow" class="table table-light table-borderless table-hover table-responsive align-middle caption-top text-center">
@@ -96,7 +96,17 @@
         </table>
           
         </div>
-        <div class="row g-4 card-list">
+        <div class="row g-4 card-list-empty" style="display: none;">
+            <div class="row hstack pt-5"> 
+                <div class="col-md-6 col-sm-12 align-middle"> 
+                    <h2 class="">It's empty, add more cards by clicking the button above</h2> 
+                </div> 
+                <div class="col-md-6 col-sm-12"> 
+                    <img src="{{url_for('static', filename='images/empty.png')}}" class="rounded img-fluid" alt="empty deck"> 
+                </div> 
+            </div>
+        </div>
+        <div class="row g-4 card-list" style="display: none;">
             <div class="col-12">
                 <table id="card-list-table" class="table  table-borderless table-hover table-responsive align-middle caption-top text-center">
                     <caption> <strong> NOTE </strong> CSV export will contain only text, any html content will be stripped</caption>
@@ -132,7 +142,7 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td>101</td>
+                            <td>102</td>
                             <td>
                                 <div class="card text-dark text-center bg-light p-3">
                                     <div class="card-body align-middle col-flex">
@@ -151,7 +161,7 @@
                         </tr>
                         <tr>
                             <td></td>
-                            <td>101</td>
+                            <td>103</td>
                             <td>
                                 <div class="card text-dark text-center bg-light p-3">
                                     <div class="card-body align-middle col-flex">
@@ -168,647 +178,15 @@
                             </td>
                             <td>do something?</td>
                         </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Apple</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">ஆப்பிள்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td><div class="row"><a href="#" tabindex="-1" class="btn btn-primary disabled m-1 col">Edit</a> 
-                                <a href="#" tabindex="-1" class="btn btn-danger disabled m-1 col">Delete</a></div></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Banana</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">வாழைப்பழம்</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">Tomato</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>101</td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5><img class="bi me-2" width="40" height="32" src="/static/images/flashcard.png"></h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>
-                                <div class="card text-dark text-center bg-light p-3">
-                                    <div class="card-body align-middle col-flex">
-                                        <h5 class="card-title">தக்காளி</h5>
-                                    </div>
-                                  </div>
-                            </td>
-                            <td>do something?</td>
-                        </tr>
+                        
                                              
                     </tbody>
                     <tfoot>
                         <tr>
                             <th></th>
-                            <th>Card</th>
+                            <th>Card ID</th>
+                            <th>Card Front</th>
+                            <th>Card Back</th>
                             <th>Action</th>
                         </tr>
                     </tfoot>
@@ -818,11 +196,11 @@
       </div>
       
       <!-- Modal -->
-      <div class="modal fade" id="add-card-model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-deck-model-label" aria-hidden="true">
+      <div class="modal fade" id="add-card-model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add-card-model-label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="add-card-model-label">Create a new deck</h5>
+                    <h5 class="modal-title" id="add-card-model-label">Add Card</h5>
                     <button type="button" class="btn-close close-model-btn" data-bs-dismiss="modal" aria-label="Close" onclick="clear_form()"></button>
                 </div>
                 <div class="modal-body">
@@ -833,24 +211,27 @@
                     <form class="needs-validation" novalidate action="#" id="new-card-form">
 
                         <div class="mb-3">
-                            <label for="card-name" class="form-label">Name your deck</label>
-                            <div class="input-group mb-3 has-validation">
-                                <span class="input-group-text" id="card-name-label"><i class="fa fa-edit"></i></span>
-                                <input type="text" class="form-control rounded-4" id="card-name" aria-describedby="card-name-label" required>
-                                <div class="invalid-feedback text-start">
-                                    Please provide a name for the deck.
-                                </div>
-                            </div>                            
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Content to show when displaying the card" id="card-front" style="height: 100px"></textarea>
+                                <label for="card-front">Card Front</label>
+                            </div>                       
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Content to show when flipping the card (ie, answer)" id="card-back" style="height: 100px"></textarea>
+                                <label for="card-back">Card Back</label>
+                            </div>                       
                         </div>
                         
-                        <p><small class="text-muted">Add multiple tags to your deck, separated by comma <span class="badge bg-secondary">,</span></small></p>
-                        <p><small class="text-muted">A deck with the above name will be created and added to your account. You can later add cards to the deck, by visiting this deck under <span class="badge bg-secondary">Deck</span> page</small></p>
+                        <p><small class="text-muted">Any dangerous HTML tags will be removed, avoid using HTML and use only text for best results.</small></p>
+                        <p><small class="text-muted">HTML will not be exported when converting deck cards to CSV file for export.</small></p>
             
                       </form>
                 </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary close-model-btn" data-bs-dismiss="modal" onclick="clear_form()">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="deck-submit"> <span class="spinner-border spinner-border-sm spinner" style="display: none;" role="status" aria-hidden="true"></span> Create</button>
+                    <button type="button" class="btn btn-primary" id="card-submit" onclick="create_card()"> <span class="spinner-border spinner-border-sm spinner" style="display: none;" role="status" aria-hidden="true"></span> Create</button>
                 </div>
             </div>
             </div>
@@ -864,11 +245,14 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="card-remove-content">
-                  Are you sure you want to delete the deck <strong>ID</strong>, <strong>NAME</strong>?
+                  <p>Are you sure you want to delete the selected card(s)?</p>
+                  <p class="card-ids"></p>
+
+                  <p><strong>Warning: All the data and reviews attached to this card will be wiped and is not recoverable</strong></p>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-primary" ondelete="" id="card-remove-btn">Confirm</button>
+                  <button type="button" class="btn btn-primary" onclick="delete_cards(undefined, true)" id="card-remove-btn">Confirm</button>
                 </div>
               </div>
             </div>
@@ -893,21 +277,103 @@
 <script>
 
 var dt; 
+var delete_prompt;
+var CARDS_TO_DELETE = [];
 
-$(document).ready(
-function() {
-    $.fn.dataTable.ext.buttons.deleteSelected = {
-        text: '<span><i class="fa fa-trash"></i></span>  Delete Selected',
-        className: 'bg-danger border-danger',
-        action: function ( e, dt, node, config ) {
-            console.log("delete called");
+function create_card() {    
+
+    $("#card-back, #card-front").prop("readonly", true);
+    $(".close-model-btn").attr("disabled", true)
+
+    data = {
+        card_front: $("#card-front").val(),
+        card_back: $("#card-back").val()
+    }
+    
+    $("#card-submit").attr("disabled", "true");
+    $("#card-submit>.spinner").show();
+    
+    axios.put('{{url_for("routes.api.card.add_card_to_deck", deck_id=1001)}}'.replace("1001", "{{deck.deck_id}}"), 
+        data
+    ).then(function(r) {
+        card = r.data.data;
+        if (!!!dt) {
+            $('.card-list-empty').hide();
+            render_cards([card]);
+        } else {
+            if (dt.data().length < 1) {
+                $('.card-list-empty').hide();
+            }
+
+            $('.card-list').show();
+            dt.rows.add([card]).draw();
         }
-    };
+
+        $('.close-model-btn').trigger('click');
+
+        $.toast({
+            type: 'success',
+            title: `Card ${card.card_id} created`,
+            subtitle: 'just now',
+            content: `Card ${card.card_id} has been created and added to your deck successfully!`,
+            delay: 60000,
+            });
+
+    }).catch(function(e) {
+        var html = "";
+        if (e.response.status == 400) {
+            for (var err in e.response.data.validation_error.body_params) {
+                for (var i = 0; i < e.response.data.validation_error.body_params[err]['loc'].length; i++)
+                    html += `<p class="text-start"><strong>${e.response.data.validation_error.body_params[err]['loc'][i]}</strong> ${e.response.data.validation_error.body_params[err]['msg']}</p>`
+            }
+        } else {
+            if (e.response.data.errors) {
+                for (var i = 0; i < e.response.data.errors.length; i++) {
+                    html += `<p class="text-start"><strong>${e.response.data.errors[i].error_code}</strong> ${e.response.data.errors[i].error_description}</p>`;
+                }
+            } else {
+                html = '<p class="text-start">Something went wrong, please try again</p>';
+            }
+        }
+
+        $('.error-content').html(html);
+        $('.error').show();
+    }).then(release_form());
+}
+
+
+function release_form() {
+    $("#card-back, #card-front").prop("readonly", false);
+    $(".close-model-btn").attr("disabled", false);
+    $("#card-submit").attr("disabled", false);
+    $("#card-submit>.spinner").hide();
+}
+
+function clear_form() {
+    release_form();
+
+    $("#card-back, #card-front").val('');
+    $('.error-content').html('');
+    $('.error').hide();
+}
+
+
+function render_cards(data) {
+    
+
+    $('.card-list').show();
+    
+    if (!!dt) {
+        dt.data.clear();
+        dt.clear();
+        dt.rows.add(data).draw();
+        return;
+    }
 
     dt = $("#card-list-table").DataTable({select: {
         style: "multi"
         },
-        
+      data: data,
       columnDefs: [
         {
           targets: 0,
@@ -916,13 +382,31 @@ function() {
           selectAllPages: false
         }
       ],
+      order: [[ 1, "desc" ]],
       columns: [
-        { orderable: false},
-        null,
-        null,
-        null,
-        { orderable: false}
+        { data:null, render: () => ''},
+        {data: 'card_id'},
+        {
+            data: 'card_front',
+            render: function(data, type, row, meta) {
+                return `<div class="card text-dark text-center bg-light p-3" style="max-height: 200px; overflow: auto;"> <div class="card-body align-middle col-flex"> <h5 class="card-title">${data}</h5> </div> </div>`
+            }
+        },
+        {
+            data: 'card_back',
+            render: function(data, type, row, meta) {
+                return `<div class="card text-dark text-center bg-light p-3" style="max-height: 200px; overflow: auto;"> <div class="card-body align-middle col-flex"> <h5 class="card-title">${data}</h5> </div> </div>`
+            }
+        },
+        { 
+            render: function ( data, type, row, meta ) {
+                return `<div class="row" id="card-row-${data.card_id}"><a tabindex="-1" class="btn btn-primary m-1 col border-light" onclick="update_card(${data.card_id})">Edit</a> <a tabindex="-1" class="btn btn-danger m-1 col border-light del-card-btn" onclick="delete_cards(${data.card_id})">Delete</a></div>`
+            },
+            data: null,
+            orderable: false
+        }
       ],
+      
       dom: 'Bfrtip',
       buttons: [
             'deleteSelected',
@@ -952,6 +436,139 @@ function() {
               }
         ]
     });
+    dt.draw();
+}
+
+
+function populate_cards() {
+    $('.card-list-placeholder').show();
+    $('.card-list').hide();
+
+    axios.get("{{url_for('routes.api.card.get_deck_cards', deck_id=deck.deck_id)}}").then(
+        function(r) {
+            if (r.data.errors) {
+                $('.card-list-empty').html('<div class="alert alert-danger error" role="alert"> <p>Unable to fetch the cards, please refresh and try again.</p> </div>').show();
+                return;
+            }
+
+            $('#create-card-model-btn').prop('disabled', false);
+
+            if (r.data.data.length < 1) {
+                if (!!dt) {
+                    dt.data().clear();
+                }
+
+                $('.card-list-empty').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more cards by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`).show();
+                return;
+            } 
+
+            render_cards(r.data.data);
+        }
+    ).catch(
+        function() {
+            $('.card-list-empty').html('<div class="alert alert-danger error" role="alert"> <p>Unable to fetch the cards, please refresh and try again.</p> </div>').show();
+        }
+    ).then(
+        function() {
+            $('.card-list-placeholder').hide();
+        }
+    );
+}
+
+
+function delete_cards(id, popup) {
+
+    if (!popup) {
+        CARDS_TO_DELETE = (id && [id]) || dt.rows({selected: true}).data().toArray().map((d) => d.card_id);
+
+        if (CARDS_TO_DELETE.length < 1) return;
+        
+        $("#card-remove .card-ids").html("Card IDs: " + CARDS_TO_DELETE.map((d) => `<span class="badge bg-secondary text-light">${d}</span>`).join(" "));
+        delete_prompt.show();
+
+        return;
+    }
+
+    delete_prompt.hide();
+    $(".delete-all-btn").addClass("disabled");
+    for(i = 0; i < CARDS_TO_DELETE.length; i++) {
+        a = $("#card-row-" + CARDS_TO_DELETE[i]).find(".del-card-btn");
+        a && a.addClass("disabled");
+    }
+
+    function reset_cards() {
+        $.toast({
+            type: 'error',
+            title: `Delete failed`,
+            subtitle: 'just now',
+            content: `Unable to delete the selected cards, please try again.`,
+            delay: 60000,
+          });
+
+        for(i = 0; i < CARDS_TO_DELETE.length; i++) {
+            a = $("#card-row-" + CARDS_TO_DELETE[i]).find(".del-card-btn");
+            a && a.removeClass("disabled");
+        }
+    }
+
+    axios.delete("{{url_for('routes.api.card.delete_card_from_deck', deck_id=deck.deck_id)}}", {data: {card_ids: CARDS_TO_DELETE}}).then(
+        function(r) {
+            
+            if (r.data.errors) {
+                reset_cards();
+                return;
+            }
+
+            if (!r.data.data) {
+                $.toast({
+                    type: 'warning',
+                    title: `Delete cancelled`,
+                    subtitle: 'just now',
+                    content: `No cards were selected, thus deletion process was cancelled`,
+                    delay: 60000,
+                  });    
+
+                  return;
+            }
+
+            $.toast({
+                type: 'success',
+                title: `Cards deleted`,
+                subtitle: 'just now',
+                content: `The selected cards were deleted successfully!`,
+                delay: 60000,
+              });
+
+            
+            populate_cards();
+        }
+
+    ).catch(
+        reset_cards
+    ).then(
+        function() {
+            $(".delete-all-btn").removeClass("disabled");
+        }
+    );
+
+}
+
+$(document).ready(
+function() {
+    delete_prompt = new bootstrap.Modal($("#card-remove")[0]);
+
+    $("#card-remove")[0].addEventListener('hidden.bs.modal', function() {
+        CARDS_TO_DELETE = [];
+    });
+
+    $.fn.dataTable.ext.buttons.deleteSelected = {
+        text: '<span><i class="fa fa-trash"></i></span>  Delete Selected',
+        className: 'bg-danger border-danger delete-all-btn',
+        action: function ( e, dt, node, config ) {
+            delete_cards();
+        }
+    };
+
 
     $("#select-all-card").change(function(){
         if (this.checked) {
@@ -961,12 +578,13 @@ function() {
         }
     });
 
+    populate_cards();
+
 }
 );
 
 </script>
 
-<!--TODO: ADD FILTERING DECK BY TAGS-->
 {% endblock end_body_block %}
 
 {% block head_content %}

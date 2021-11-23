@@ -6,9 +6,11 @@ from flashcard.models.error import APIErrorModel, APIExceptionResponse, APIExcep
 from flashcard.models.response import APIResponse
 from flashcard.core.utils import get_current_user
 from flashcard.routes.api.deck import deck_blueprint
+from flashcard.routes.api.card import card_blueprint
 
 api_blueprint = Blueprint("api", __name__, url_prefix="/api")
 api_blueprint.register_blueprint(deck_blueprint)
+api_blueprint.register_blueprint(card_blueprint)
 
 @api_blueprint.before_request
 def requires_login():

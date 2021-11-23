@@ -31,3 +31,6 @@ def deck():
 @dashboard_blueprint.get("/deck/<int:deck_id>/")
 def deck_cards(deck_id: int):    
     return render_template("dashboard/cards.html", user=g.user, deck = db.session.query(Deck).where(Deck.user == g.user, Deck.deck_id == deck_id).first())
+
+
+
