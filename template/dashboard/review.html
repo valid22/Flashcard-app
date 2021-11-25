@@ -1,0 +1,91 @@
+{% extends 'dashboard/base.html'%}
+
+{% block title %} Review - Dashboard {% endblock title %}
+{% set page = 'review' %}
+
+{% block main_content %} 
+<div class="d-grid gap-3">
+    <div class="dash-heading">
+        <h1>Review and practise decks</h1>
+    </div>
+
+    <div class="container d-grid gap-3">
+        
+        {% if (decks is none) or (decks | length < 1) %}
+        <div class="row hstack pt-5"> 
+            <div class="col-md-6 col-sm-12 align-middle"> 
+                <h2 class="">You don't have any decks, create one by <a href="{{url_for('routes.dashboard.deck')}}">clicking here</a>.</h2> 
+            </div> 
+            <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty-deck.png')}}" class="rounded img-fluid" alt="empty deck"> 
+            </div> 
+        </div>
+        {% else %}
+        
+        <div class="row g-4 deck-list">
+            <table id="deck-list" class="table table-light table-borderless table-hover table-responsive align-middle caption-top text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Deck ID</th>
+                        <th>Deck</th>
+                        <th>Deck Score</th>
+                        <th>Last Reviewed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deck in decks %}
+                    <tr>
+                        <td>{{deck.deck_id}}</td>
+                        <td><p><a href="{{url_for('routes.dashboard.review_deck', deck_id=deck.deck_id)}}">{{deck.deck_title}}</a></p></td>
+                        <td><p class="text-{{'success' if deck.review_score > 89 else ('warning' if deck.review_score > 49 else 'danger')}}">{{deck.review_score}}</p></td>
+                        <td>{{deck.last_reviewed_on}}</td>
+                    </tr>                                         
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Deck ID</th>
+                        <th>Deck</th>
+                        <th>Deck Score</th>
+                        <th>Last Reviewed</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        {% endif %}
+      </div>
+      
+</div>
+
+<style>
+.rounded-4 { border-radius: .5rem; }
+.rounded-5 { border-radius: .75rem; }
+.rounded-6 { border-radius: 1rem; }
+</style>
+
+
+{% endblock main_content %}
+
+
+{% block end_body_block %}
+{{super()}}
+<script src="{{url_for('static', filename='js/datatables.min.js')}}" ></script>
+<script src="{{url_for('static', filename='js/select.bootstrap.min.js')}}" ></script>
+<script>
+
+$(document).ready(
+    function(){
+        $("#deck-list").DataTable();
+    }
+)
+
+</script>
+
+<!--TODO: ADD FILTERING DECK BY TAGS-->
+{% endblock end_body_block %}
+
+
+{% block head_content %}
+<link href="{{url_for('static', filename='css/datatables.min.css')}}" rel="stylesheet">
+<link href="{{url_for('static', filename='css/select.bootstrap5.min.css')}}" rel="stylesheet">
+
+{% endblock head_content %}

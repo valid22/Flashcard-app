@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html'%}
+
+{% block title %} Review - Dashboard {% endblock title %}
+{% set page = 'review-card' %}
+
+{% block main_content %} 
+<div class="d-grid gap-3">
+    <div class="dash-heading">
+        <h1>Practise deck - <i>{{deck.deck_title}}</i></h1>
+    </div>
+
+    <div class="container d-grid gap-3">
+        {% if card is none %}
+            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                <h3>You have finished all card in this deck, come back later to train more!</h3>
+                <p><img src="{{url_for('static', filename='images/meditate.png')}}"></p>
+            </div>
+        {% else %}
+                
+            <div class="row g-4 deck-list position-absolute top-50 start-50 translate-middle">
+                <div class="card text-dark text-center bg-light p-3"> 
+                    <div class="">
+                        <div class="card-body align-middle col-flex"> 
+                            <h3 class="card-title">{{card.card_front | safe}}</h3> 
+                        </div> 
+                    </div>
+                </div>
+
+                <div class="answer" style="display: none;">
+                    <div class="card text-dark text-center bg-light p-3">
+                        <div class="">
+                            <div class="card-body align-middle col-flex"> 
+                                <h3 class="card-title">{{card.card_back | safe}}</h3> 
+                            </div> 
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p>
+                        <h3 class="mx-auto">How was the card?</h3>
+                        <div class="d-grid gap-2 d-md-block mx-auto">
+                            <button class="btn btn-danger" type="button" onclick="cardResponse('again');">Again</button>
+                            {% if card.status == 'learned' %}<button class="btn btn-warning" type="button" onclick="cardResponse('hard');">Hard</button> {% endif %}
+                            <button class="btn btn-primary" type="button" onclick="cardResponse('good');">Good</button>
+                            {% if card.status != 'relearned' %}<button class="btn btn-success" type="button" onclick="cardResponse('easy');">Easy</button> {% endif %}
+                        </div>                      
+                        </p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary btn-lg mx-auto show-ans-btn" onclick="showAnswer()" style="max-width: 160px;">Show Answer</button>
+            </div>
+            <form style="display: none;" method="POST" action="{{url_for('routes.dashboard.review_deck', deck_id=deck.deck_id)}}">
+                <input hidden type="text" value="" name="response">
+                <input hidden type="text" value="{{card.card_id}}" name="card_id">
+            </form>
+        {% endif %}
+      </div>
+      
+</div>
+
+<style>
+.rounded-4 { border-radius: .5rem; }
+.rounded-5 { border-radius: .75rem; }
+.rounded-6 { border-radius: 1rem; }
+</style>
+
+
+{% endblock main_content %}
+
+
+{% block end_body_block %}
+{{super()}}
+<script>
+
+function showAnswer() {
+    $(".show-ans-btn").hide();
+    $(".answer").show();
+}
+
+function cardResponse(r) {
+    $("input[name=response]").val(r);
+    $("form")[0].submit();
+}
+
+</script>
+
+<!--TODO: ADD FILTERING DECK BY TAGS-->
+{% endblock end_body_block %}

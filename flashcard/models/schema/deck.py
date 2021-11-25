@@ -17,3 +17,5 @@ class Deck(db.Model):
 
     cards = db.relationship("Card", cascade="all,delete", backref="deck")
     tags = db.relationship("Tag", secondary=deck_tag_association, backref="decks")
+    reviews = db.relationship("Review", cascade="all,delete", backref="deck")
+

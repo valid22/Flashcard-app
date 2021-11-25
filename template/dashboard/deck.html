@@ -302,7 +302,7 @@ function populate_decks() {
             DECK_DATA = r.data.data;
 
             if (r.data.data.length < 1) {
-                $('.deck-list').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more decks by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`);
+                $('.deck-list').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more decks by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty-deck.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`);
             }
         }
     ).catch(
@@ -366,6 +366,11 @@ function remove_deck(deck_id, confirm) {
               });
 
             $(`#deck-${deck_id}`).remove();
+            DECK_DATA.splice((DECK_DATA.findIndex((x) => x.deck_id == deck_id)), 1);
+
+            if (DECK_DATA < 1) {
+                $('.deck-list').html(`<div class="row hstack pt-5"> <div class="col-md-6 col-sm-12 align-middle"> <h2 class="">It's empty, add more decks by clicking the button above</h2> </div> <div class="col-md-6 col-sm-12"> <img src="{{url_for('static', filename='images/empty-deck.png')}}" class="rounded img-fluid" alt="empty deck"> </div> </div>`);
+            }
         }
     ).catch(
         reset_deck
@@ -380,5 +385,4 @@ $(document).ready(function() {
 
 </script>
 
-<!--TODO: ADD FILTERING DECK BY TAGS-->
 {% endblock end_body_block %}

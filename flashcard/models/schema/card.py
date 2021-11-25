@@ -13,11 +13,10 @@ class Card(db.Model):
 
     created_on = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     last_reviewed = db.Column(db.DateTime, server_default=func.now(), nullable=False)
-    #next_review = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    next_review = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     
-    # status = db.Column(db.Integer, nullable=False, default=0)
-    # steps_index = db.Column(db.Integer, nullable=False, default=0)
-    # ease_factor = db.Column(db.Integer, nullable=False, default=250)
-    # interval = db.Column(db.Integer)
+    status = db.Column(db.String(12), nullable=False, default='learning')
+    steps_index = db.Column(db.Integer, nullable=False, default=0)
+    ease_factor = db.Column(db.Integer, nullable=False, default=250)
+    interval = db.Column(db.Integer)
     
-    reviews = db.relationship("Review", cascade="all,delete", backref="card")

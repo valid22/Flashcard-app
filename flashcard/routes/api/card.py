@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from flask import Blueprint, session, request, g
 from flashcard.models import error
 from flashcard.models.error import APIException, APIErrorModel
@@ -10,6 +10,7 @@ from flask_pydantic import validate
 from flashcard.core import db
 from sqlalchemy import desc
 import datetime
+import pandas as pd
 
 
 class CardResponseModel(BaseModel):
@@ -22,6 +23,7 @@ class CardResponseModel(BaseModel):
 
 
 class CardRequest(BaseModel):
+    card_id: Optional[int]
     card_front: str
     card_back: str
 
@@ -91,11 +93,13 @@ def delete_card_from_deck(body: CardDeleteRequest, deck_id: int) -> APIResponse:
     return APIResponse(success=True, data={'card_ids': body.card_ids})
 
 
-@card_blueprint.patch("/<int:card_id>/")
+@card_blueprint.patch("/<int:deck_id>/")
 @validate()
-def update_card(body: CardRequest, card_id: int) -> APIResponse:
-    card = Card.query.get(card_id)
-    if card is None or card.deck.user.user_id != g.user.user_id:
+def update_card(body: CardRequest, deck_id: int) -> APIResponse:
+    deck = Deck.query.where(Deck.deck_id == deck_id, Deck.user == g.user).first()
+    card = Card.query.where(Card.card_id == body.card_id, Card.deck == deck).first()
+
+    if deck is None or card is None:
         raise APIException(APIErrorModel(error_code="CARD404", error_description="CARD not found"), status_code=404)
     
     card.card_front = body.card_front
@@ -105,3 +109,27 @@ def update_card(body: CardRequest, card_id: int) -> APIResponse:
     db.session.commit()
 
     return APIResponse(success=True, data=CardResponseModel.from_orm(card))
+
+
+@card_blueprint.post("/<int:deck_id>/")
+@validate()
+def import_csv(deck_id: int) -> APIResponse:
+    deck = Deck.query.where(Deck.deck_id == deck_id, Deck.user == g.user).first()
+    if deck is None:
+        raise APIException(APIErrorModel(error_code="DECK404", error_description="Deck not found"), status_code=404)
+
+    file = request.files.get("file")
+    if file is None:
+        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=404)
+    
+    try:
+        df = pd.read_csv(file)[1:].values
+        cards = [Card(card_front=i[0], card_back=i[1], deck=deck) for i in df]
+        db.session.add_all(cards)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=404) 
+
+    return APIResponse(success=True, data={'count': len(cards)})
+    

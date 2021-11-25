@@ -2,7 +2,7 @@ from flask import Blueprint, session, request, g
 from flashcard.models.error import APIException, APIErrorModel
 from flashcard.models.response import APIResponse
 from flashcard.models.schema import Deck, Tag, Review, Card
-from flashcard.core import sanitizer
+from flashcard.core.review import get_latest_deck_review
 from pydantic import BaseModel, validator
 from typing import List, Set, Union
 from flask_pydantic import validate
@@ -16,6 +16,10 @@ class CreateDeckRequest(BaseModel):
 
     @validator("tags")
     def validate_tags(cls, val):
+        val = val.strip()
+        if not val:
+            return set()
+
         if isinstance(val, str):
             val = val.split(",")
         
@@ -43,26 +47,10 @@ class DeckResponseModel(BaseModel):
     created_on: str
     last_reviewed_on: str
     cards_count: int
+    review_score: int = -1
 
 
 deck_blueprint = Blueprint("deck", __name__, url_prefix="/deck")
-
-
-def get_latest_deck_review(deck: Deck) -> datetime.datetime:
-    """Get date of last review of cards from this deck
-
-    Args:
-        deck_id (int): deck id
-
-    Returns:
-        datetime.datetime
-    """
-
-    query = db.session.query(Review.reviewed_on).join(Card, Review.card).filter(Card.deck == deck).order_by(desc(Review.reviewed_on)).limit(1)
-    review_date = query.scalar()
-    
-    return review_date or deck.created_on
-
 
 @deck_blueprint.put("/")
 @validate()
