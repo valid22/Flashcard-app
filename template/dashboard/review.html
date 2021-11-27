@@ -28,6 +28,7 @@
                         <th>Deck ID</th>
                         <th>Deck</th>
                         <th>Deck Score</th>
+                        <th>Deck Progress</th>
                         <th>Last Reviewed</th>
                     </tr>
                 </thead>
@@ -37,6 +38,7 @@
                         <td>{{deck.deck_id}}</td>
                         <td><p><a href="{{url_for('routes.dashboard.review_deck', deck_id=deck.deck_id)}}">{{deck.deck_title}}</a></p></td>
                         <td><p class="text-{{'success' if deck.review_score > 89 else ('warning' if deck.review_score > 49 else 'danger')}}">{{deck.review_score}}</p></td>
+                        <td><p> <span class="text-success">{{deck.progress['learnt']}}</span> |  <span class="text-warning">{{deck.progress['learning']}}</span> | <span class="text-danger">{{deck.progress['relearning']}}</span></p></td>
                         <td>{{deck.last_reviewed_on}}</td>
                     </tr>                                         
                     {% endfor %}
@@ -46,6 +48,10 @@
                         <th>Deck ID</th>
                         <th>Deck</th>
                         <th>Deck Score</th>
+                        <th>
+                            <p><muted class="fs-6 fw-light"><span class="text-success">learnt</span> |  <span class="text-warning">learning</span> | <span class="text-danger">relearning</span></muted></p>
+                            Deck Progress
+                        </th>
                         <th>Last Reviewed</th>
                     </tr>
                 </tfoot>

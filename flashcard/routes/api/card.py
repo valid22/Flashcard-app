@@ -120,7 +120,7 @@ def import_csv(deck_id: int) -> APIResponse:
 
     file = request.files.get("file")
     if file is None:
-        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=404)
+        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=400)
     
     try:
         df = pd.read_csv(file)[1:].values
@@ -129,7 +129,7 @@ def import_csv(deck_id: int) -> APIResponse:
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=404) 
+        raise APIException(APIErrorModel(error_code="IMPORT404", error_description="No valid csv file provided"), status_code=400) 
 
     return APIResponse(success=True, data={'count': len(cards)})
     

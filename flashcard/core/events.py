@@ -24,10 +24,10 @@ def pre_process(app: Flask) -> None:
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_ECHO'] = SQLALCHEMY_ECHO
     app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.config['ENV'] = 'development'
+    app.config['ENV'] = ENV_TYPE
     app.config['SECRET_KEY'] = SECRET_KEY
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = False
 
     logger.info("initialized app config values")
 

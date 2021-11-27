@@ -122,8 +122,9 @@ def get_latest_deck_review(deck: Deck) -> datetime:
 
 
 def get_deck_score(deck: Deck) -> int:
-    res =  Card.query.with_entities(Card.status, func.count()).where(Card.deck == deck).group_by(Card.status).all()
-    res = dict(learning=0, learnt=0, relearning=0) | dict(res)
+    r =  Card.query.with_entities(Card.status, func.count()).where(Card.deck == deck).group_by(Card.status).all()
+    res = dict(learning=0, learnt=0, relearning=0) # | dict(res)
+    res.update(dict(r))
     total = sum(res.values()) or 1
 
     score = (res['learnt'] * 1 + res['learning'] * 0 - res['relearning'] * 1) / total

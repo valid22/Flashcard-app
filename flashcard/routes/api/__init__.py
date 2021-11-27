@@ -17,7 +17,7 @@ def requires_login():
     try:
         user = get_current_user()
     except APIException:
-        raise APIException(APIErrorModel(error_code="USER403", error_description="Permission denied.", status_code=403), status_code=403)
+        raise APIException(APIErrorModel(error_code="USER403", error_description="Permission denied", status_code=403), status_code=403)
     
     g.user = user
     

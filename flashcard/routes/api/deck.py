@@ -4,7 +4,7 @@ from flashcard.models.response import APIResponse
 from flashcard.models.schema import Deck, Tag, Review, Card
 from flashcard.core.review import get_latest_deck_review
 from pydantic import BaseModel, validator
-from typing import List, Set, Union
+from typing import List, Optional, Set, Union
 from flask_pydantic import validate
 from flashcard.core import db
 from sqlalchemy import desc
@@ -48,6 +48,7 @@ class DeckResponseModel(BaseModel):
     last_reviewed_on: str
     cards_count: int
     review_score: int = -1
+    progress: Optional[dict]
 
 
 deck_blueprint = Blueprint("deck", __name__, url_prefix="/deck")

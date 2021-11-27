@@ -1,0 +1,683 @@
+---
+openapi: 3.0.0
+info:
+  title: Flashcard app API
+  description: |
+    OpenAPI specs for Flashcard app, IITM-POD Diploma MAD-1 project by Dote (21f1004210).
+  contact:
+    email: 21f1004210@student.onlinedegree.iitm.ac.in
+  license:
+    name: GNU GENERAL PUBLIC LICENSE v3.0
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/dote10110/Flashcard-app/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://flashcard-app.awfulmyself.repl.co/api
+  description: Flashcard app API
+tags:
+- name: deck
+  description: Operations with user decks
+- name: card
+  description: Operations with deck cards
+- name: login
+  description: Authenticate the session
+paths:
+  /deck/:
+    get:
+      tags:
+      - deck
+      summary: Get list of user deck
+      operationId: getUserDecks
+      responses:
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+      security:
+      - cookieAuth: []
+    put:
+      tags:
+      - deck
+      summary: Create a new deck
+      operationId: addDeckToUser
+      requestBody:
+        $ref: '#/components/requestBodies/CreateDeckRequest'
+      responses:
+        "400":
+          description: Validating deck details failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "200":
+          description: Deck created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+      security:
+      - cookieAuth: []
+  /deck/{deck_id}:
+    delete:
+      tags:
+      - deck
+      summary: Delete the deck
+      operationId: deleteUserDeck
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+      security:
+      - cookieAuth: []
+  /card/{deck_id}/:
+    get:
+      tags:
+      - card
+      summary: Get list of deck's cards
+      operationId: getDeckCards
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+      security:
+      - cookieAuth: []
+    put:
+      tags:
+      - card
+      summary: Add a card to deck
+      operationId: addCardToDeck
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/AddCardRequest'
+      responses:
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+      security:
+      - cookieAuth: []
+    post:
+      tags:
+      - card
+      summary: Import cards from csv file
+      operationId: importCardToDeck
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/card_deck_id_body'
+      responses:
+        "400":
+          description: Invalid csv file provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+      security:
+      - cookieAuth: []
+    delete:
+      tags:
+      - card
+      summary: Delete card(s) from the deck
+      operationId: deleteCardsFromDeck
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/AddCardRequest'
+      responses:
+        "400":
+          description: Validating deck details failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_1'
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+      security:
+      - cookieAuth: []
+    patch:
+      tags:
+      - card
+      summary: Update a card in the deck
+      operationId: updateCardInDeck
+      parameters:
+      - name: deck_id
+        in: path
+        description: The deck ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCardRequest'
+      responses:
+        "403":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_403'
+        "500":
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+        "404":
+          description: Deck not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+        "200":
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+      security:
+      - cookieAuth: []
+  /login:
+    post:
+      tags:
+      - login
+      summary: Logs in and returns the authentication  cookie
+      requestBody:
+        description: A JSON object containing the login and password.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "302":
+          description: Successfully authenticated, redirect to dashboard
+          headers:
+            Location:
+              description: dashboard URI
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: uri
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session=XXXXX; Path=/; HttpOnly
+      security: []
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    APIErrorModel:
+      type: object
+      properties:
+        error_code:
+          type: string
+        error_description:
+          type: string
+        status_code:
+          type: integer
+          default: 500
+    APIResponse:
+      required:
+      - data
+      - success
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          nullable: true
+        errors:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/APIErrorModel'
+    ValidationError:
+      type: object
+      properties:
+        validation_error:
+          $ref: '#/components/schemas/ValidationError_validation_error'
+    CreateDeckRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Example deck
+        tags:
+          type: array
+          items:
+            type: string
+            example: example
+    DeckResponseModel:
+      type: object
+      properties:
+        deck_id:
+          type: integer
+        deck_title:
+          type: string
+        deck_tags:
+          type: array
+          items:
+            type: string
+        created_on:
+          type: string
+        last_reviewed_on:
+          type: string
+        cards_count:
+          type: integer
+        review_score:
+          type: integer
+          default: -1
+    CardModel:
+      type: object
+      properties:
+        card_id:
+          type: string
+        card_front:
+          type: string
+        card_back:
+          type: string
+    inline_response_403:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: false
+          data: {}
+          errors:
+            example:
+            - error_code: USER403
+              error_description: Permission denied
+              status_code: 403
+    inline_response_500:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: false
+          data: {}
+          errors:
+            example:
+            - error_code: SERVER_101
+              error_description: Something went wrong
+              status_code: 500
+    inline_response_200:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/DeckResponseModel'
+          errors: {}
+    inline_response_200_1:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            $ref: '#/components/schemas/DeckResponseModel'
+          errors: {}
+    inline_response_404:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: false
+          data: {}
+          errors:
+            example:
+            - error_code: DECK404
+              error_description: Deck not found
+              status_code: 404
+    inline_response_200_2:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            $ref: '#/components/schemas/inline_response_200_2_data'
+          errors: {}
+    inline_response_200_3:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/CardModel'
+          errors: {}
+    card_deck_id_body:
+      type: object
+      properties:
+        file:
+          type: string
+          format: utf-8
+    inline_response_400:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: false
+          data: {}
+          errors:
+            example:
+            - error_code: IMPORT404
+              error_description: No valid csv file provided
+              status_code: 500
+    inline_response_200_4:
+      type: object
+      properties:
+        success:
+          example: true
+        data:
+          $ref: '#/components/schemas/inline_response_200_4_data'
+        errors: {}
+    inline_response_400_1:
+      oneOf:
+      - $ref: '#/components/schemas/ValidationError'
+      - allOf:
+        - $ref: '#/components/schemas/APIResponse'
+        - type: object
+          properties:
+            success:
+              example: false
+            data: {}
+            errors:
+              example:
+              - error_code: CARD101
+                error_description: One or more card id is not found under current deck
+                status_code: 500
+    inline_response_200_5:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            $ref: '#/components/schemas/inline_response_200_5_data'
+          errors: {}
+    inline_response_200_6:
+      allOf:
+      - $ref: '#/components/schemas/APIResponse'
+      - type: object
+        properties:
+          success:
+            example: true
+          data:
+            $ref: '#/components/schemas/CardModel'
+          errors: {}
+    ValidationError_validation_error_body_params:
+      type: object
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+        msg:
+          type: string
+        type:
+          type: string
+    ValidationError_validation_error:
+      type: object
+      properties:
+        body_params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError_validation_error_body_params'
+    inline_response_200_2_data:
+      type: object
+      properties:
+        deck_id:
+          type: integer
+    inline_response_200_4_data:
+      type: object
+      properties:
+        count:
+          type: integer
+    inline_response_200_5_data:
+      type: object
+      properties:
+        card_ids:
+          type: array
+          items:
+            type: integer
+  requestBodies:
+    CreateDeckRequest:
+      description: Deck data to add the deck
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateDeckRequest'
+      required: true
+    AddCardRequest:
+      description: Card data to add into the deck
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CardModel'
+      required: true
+    UpdateCardRequest:
+      description: Update card data in the deck
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CardModel'
+      required: true
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: session
+      in: cookie

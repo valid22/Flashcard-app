@@ -49,8 +49,11 @@ def deck_cards(deck_id: int):
 def review():
     decks = []
     for d in (g.user.decks or []):
+        r =  Card.query.with_entities(Card.status, func.count()).where(Card.deck == d).group_by(Card.status).all()
+        progress = dict(learning=0, learnt=0, relearning=0) # | dict(res)
+        progress.update(dict(r))
         decks.append(DeckResponseModel(deck_id = d.deck_id, deck_title=d.deck_title, deck_tags=[], created_on=d.created_on.strftime("%d %b, %Y"), 
-            last_reviewed_on=get_latest_deck_review(d).strftime("%d %b, %Y %H:%M:%S"), cards_count=-1, review_score=get_deck_score(d)))
+            last_reviewed_on=get_latest_deck_review(d).strftime("%d %b, %Y %H:%M:%S"), cards_count=-1, review_score=get_deck_score(d), progress=progress))
 
     return render_template("dashboard/review.html", user=g.user, decks=decks)
 
@@ -77,7 +80,7 @@ def review_deck_response(deck_id: int):
         return redirect(url_for('.review'))
     
     rint = schedule_review(card, r)
-    print("rint", rint)
+    
     card.last_reviewed = datetime.datetime.now()
     card.next_review = card.last_reviewed + rint
 

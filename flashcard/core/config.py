@@ -17,5 +17,7 @@ APP_NAME: str = config.get("APP_NAME", "FlashcardApp")
 SECRET_KEY: str = config.get("APP_SECRET", "892a32bb3d85ffe8b79a73d70f13817f")
 
 LOG_FILE: str = config.get("LOG_FILE", "./logs/flashcard.log")
-LOG_LEVEL: str = "DEBUG"
+LOG_LEVEL: str = config.get('LOG_LEVEL', 'DEBUG')
 LOG_BACKTRACE: bool = True
+
+ENV_TYPE = config.get('ENV_TYPE', 'development')
