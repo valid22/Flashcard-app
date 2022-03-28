@@ -1,6 +1,6 @@
 from flashcard import event
 from flashcard.core.config import *
-from flashcard.core import db, sess
+from flashcard.core import db, sess, jwt, cache
 from flashcard.core.log import InterceptHandler
 from flashcard.models import schema
 
@@ -26,6 +26,7 @@ def pre_process(app: Flask) -> None:
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['ENV'] = ENV_TYPE
     app.config['SECRET_KEY'] = SECRET_KEY
+    app.config["JWT_SECRET_KEY"] = SECRET_KEY
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['TEMPLATES_AUTO_RELOAD'] = False
 
@@ -77,3 +78,42 @@ def setup_session(app: Flask) -> None:
     sess.init_app(app)
 
     logger.info("flask-session initialized")
+
+
+@event.on("before_start")
+def setup_session(app: Flask) -> None:
+    """Initialize JWT Manager.
+
+    Args:
+        app (Flask): Flask app
+    """
+    
+    jwt.init_app(app)
+
+    logger.info("Flask-JWT initialized")
+
+
+@event.on("before_start")
+def setup_session(app: Flask) -> None:
+    """Initialize CORS.
+
+    Args:
+        app (Flask): Flask app
+    """
+    
+    #cors.init_app(app)
+
+    logger.info("Flask-CORS initialized")
+
+
+@event.on("before_start")
+def setup_session(app: Flask) -> None:
+    """Initialize Cache.
+
+    Args:
+        app (Flask): Flask app
+    """
+    
+    cache.init_app(app)
+
+    logger.info("Flask-caching initialized")

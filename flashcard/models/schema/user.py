@@ -8,6 +8,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False) # sha256 hash
+    email = db.Column(db.String(120), nullable=False)
 
     registered_on = db.Column(db.DateTime, server_default=func.now())
     decks = db.relationship("Deck", cascade="all,delete", backref="user")

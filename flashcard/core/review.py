@@ -1,8 +1,10 @@
 from sqlalchemy.sql.expression import label
 from flashcard.models.schema import Card, Deck, Review
-from flashcard.core import db
+from flashcard.core import db, cache
+from flashcard.core.utils import get_cache, set_cache, has_cache
 from sqlalchemy import desc, func
 from datetime import date, timedelta, datetime
+from dateutil import parser
 import plotly
 import plotly.express as px
 import plotly.graph_objs as go
@@ -104,7 +106,7 @@ def schedule_review(card: Card, response: str) -> timedelta:
             raise ValueError("invalid response")
 
 
-def get_latest_deck_review(deck: Deck) -> datetime:
+def get_latest_deck_review(deck: Deck, update: bool = False) -> datetime:
     """Get date of last review of cards from this deck
 
     Args:
@@ -114,21 +116,32 @@ def get_latest_deck_review(deck: Deck) -> datetime:
         datetime.datetime
     """
 
+    if not update and has_cache('last_review', deck.deck_id):
+        val = get_cache("last_review", deck.deck_id)
+        return parser.parse(val) if val else deck.created_on
+
     query = Review.query.with_entities(Review.reviewed_on).where(Review.deck == deck).order_by(desc(Review.reviewed_on)).limit(1)
     #db.session.query(Review.reviewed_on).join(Card, Review.card).filter(Card.deck == deck).order_by(desc(Review.reviewed_on)).limit(1)
     review_date = query.scalar()
     
-    return review_date or deck.created_on
+    val = review_date or deck.created_on
+    set_cache("last_review", deck.deck_id, value=val.isoformat())
+    return val
 
 
-def get_deck_score(deck: Deck) -> int:
+def get_deck_score(deck: Deck, update: bool = False) -> int:
+    if not update and has_cache("deck_score", deck.deck_id):
+        return int(get_cache("deck_score", deck.deck_id))
+
     r =  Card.query.with_entities(Card.status, func.count()).where(Card.deck == deck).group_by(Card.status).all()
     res = dict(learning=0, learnt=0, relearning=0) # | dict(res)
     res.update(dict(r))
     total = sum(res.values()) or 1
 
     score = (res['learnt'] * 1 + res['learning'] * 0 - res['relearning'] * 1) / total
-    return round(score, 2) * 100
+    val = round(score, 2) * 100
+    set_cache("deck_score", deck.deck_id, value=val)
+    return val
 
 
 def get_score_plot_data(deck: Deck) -> str:

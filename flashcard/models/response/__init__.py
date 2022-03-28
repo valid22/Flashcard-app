@@ -5,4 +5,4 @@ from flashcard.models.error import APIErrorModel
 class APIResponse(BaseModel):
     success: bool 
     data: Union[Any, None]
-    errors: Optional[List[APIErrorModel]]
+    errors: Optional[List[Any]]

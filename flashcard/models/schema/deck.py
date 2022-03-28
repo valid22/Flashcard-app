@@ -13,6 +13,7 @@ class Deck(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
 
     deck_title = db.Column(db.String(120), nullable=False)
+    deck_img = db.Column(db.String(6692), nullable=False, default="default")
     created_on = db.Column(db.DateTime, server_default=func.now())
 
     cards = db.relationship("Card", cascade="all,delete", backref="deck")
