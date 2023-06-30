@@ -64,7 +64,7 @@ def send_mail(SUBJECT, BODY, TO, attachment = None):
     MESSAGE = MIMEMultipart('alternative')
     MESSAGE['subject'] = SUBJECT
     MESSAGE['To'] = TO
-    MESSAGE['From'] = '"Flashcard no-reply" <core@1nf1n1ty.team>' # Your name
+    MESSAGE['From'] = '"Flashcard no-reply" <email@me.com>' # Your name
     MESSAGE.preamble = "Your mail reader does not support the format."
 
     # Record the MIME type text/html.
@@ -80,18 +80,18 @@ def send_mail(SUBJECT, BODY, TO, attachment = None):
             MESSAGE.attach(MIMEApplication(data, Name=name))
 
     # The actual sending of the e-mail
-    server = smtplib.SMTP('smtppro.zoho.in:587')
+    server = smtplib.SMTP('SMTP_ADDR')
 
     server.set_debuglevel(0)
 
     # Credentials (if needed) for sending the mail
-    password = "C!SH1s0urh0m3"
+    password = ""
 
     server.starttls()
 
     try:
-        server.login("core@1nf1n1ty.team",password)
-        server.sendmail("core@1nf1n1ty.team", [TO], MESSAGE.as_string())
+        server.login("email@me.com",password)
+        server.sendmail("email@me.com", [TO], MESSAGE.as_string())
         server.quit()
         return True
     except:
